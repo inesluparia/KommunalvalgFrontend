@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Partier</title>
+    <link href="styles.css" rel="stylesheet" />
+</head>
+<body>
+<h1>Partier og deres procentdel af stemmer</h1>
+<section id="parties-container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Parti</th>
+            <th>Stemmetal</th>
+            <th>Procenter</th>
+        </tr>
+        </thead>
+        <tbody id="parties-table-body">
+        </tbody>
+    </table>
+</section>
+<p><a href="index.html">Tilbage</a></p>
+
+<script>
+
+    fetch("http://localhost:8080/parties")
+        .then(res => res.json())
+        .then(data => {
+            makeRows(data)
+        });
+
+    function makeRows(data) {
+        const html = data.map(p => `
+         <tr>
+           <td>${(p.abbreviation)}<br>${(p.name)}</td>
+           <td></td>
+           <td>${(p.id)}</td>
+         </tr>
+        `).join("")
+        document.getElementById("parties-table-body").innerHTML = html
+    }
+
+
+
+</script>
+
+</body>
+</html>

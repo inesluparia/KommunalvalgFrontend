@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tilføj kandidat</title>
+    <link href="styles.css" rel="stylesheet" />
+</head>
+<body>
+<h1>Tilføj kandidat</h1>
+<form>
+    <label>Kandidat</label>
+    <div><input id="name" placeholder="Navn" /></div>
+    <br />
+    <label>Parti</label>
+    <div><input id="party-letter" placeholder="Parti Bogstav"></div>
+    <button  id="save-btn">Opret kandidat</button>
+</form>
+<p id="status"></p>
+<p><a href="index.html">Tilbage</a></p>
+
+<script>
+
+    let parties
+    fetchParties()
+    function fetchParties() {
+        fetch("http://localhost:8080/parties")
+            .then(res => res.json())
+            .then(data => {
+                parties = data
+                });
+    }
+
+    document.getElementById("save-btn").onclick = async (evt)=>{
+        evt.preventDefault()
+        const candidate = {}
+        candidate.name = document.getElementById("name").value
+        const letter = document.getElementById("party-letter").value
+        //ignore case?
+        //wrong input?
+        const party = parties.filter( p => p.abbreviation === letter)
+        candidate.politicalParty = party
+        //await fetchParties()
+        const options = {
+            method: "POST",
+            headers : {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify(candidate)
+        }
+
+        fetch("http://localhost:8080/candidates",options)
+            .then(res=>res.json())
+            .then(p=> {
+                document.getElementById("status").innerText = JSON.stringify(p)
+            })
+    }
+</script>

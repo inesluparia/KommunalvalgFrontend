@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rediger kandidat</title>
+    <link href="styles.css" rel="stylesheet" />
+
+</head>
+<body>
+<h1>Rediger kandidat</h1>
+<div>
+    <input id="selected-id" placeholder="Tilføj ID for at finde">
+    <button id="find-btn">Find</button>
+</div>
+<form>
+    <label>Kandidatens navn</label>
+    <div><input id="name" placeholder="Navn" /></div>
+    <br />
+    <button id="save-btn">Gem ændringer</button>
+</form>
+<p id="status"></p>
+<p><a href="index.html">Tilbage</a></p>
+
+<script>
+
+    let candidate
+
+    function handleHttpErrors(res) {
+        if (!res.ok) {
+            return res.json()
+                .then(body => {
+                    const error = new Error(body.message)
+                    error.apiError = body
+                    throw error
+                })
+        }
+        return res.json()
+    }
+
+    document.getElementById("find-btn").onclick = ()=>{
+        const selectedId = document.getElementById("selected-id").value
+        fetch("http://localhost:8080/candidates/"+ selectedId)
+            .then(handleHttpErrors)
+            .then(c => {
+                candidate = c
+                document.getElementById("name").value= c.name
+            })
+            .catch(err => {
+                console.log(err.message);
+                if (err.apiError) { //Check if this was an API-error
+                    document.getElementById("status").innerText= err.message
+                }
+            })
+    }
+
+    document.getElementById("save-btn").onclick = (evt)=>{
+        evt.preventDefault()
+
+        const updatedCandidate = {}
+
+        updatedCandidate.name = document.getElementById("name").value
+
+        const options = {
+            method: "PUT",
+            headers : {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify(updatedCandidate)
+        }
+
+        fetch("http://localhost:8080/candidates/" + document.getElementById("selected-id").value, options)
+            .then(res => {
+                if(res.ok){
+                    document.getElementById("status").innerText = "Kandidaten er blevet opdateret."}
+                else {
+                    document.getElementById("status").innerText = "En fejl er sket i kandidat opdateringen."}
+            })
+    }
+
+
+</script>
+</body>
+</html>

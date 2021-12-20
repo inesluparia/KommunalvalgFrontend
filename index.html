@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Candidates</title>
+    <link href="styles.css" rel="stylesheet" />
+    <script src="index.js" type="module"></script>
+
+</head>
+<body>
+<h1>Samsø Kommune</h1>
+<h3>Kommunalvalg 2021</h3>
+
+<div id="flex-container">
+    <section id="candidates-container">
+        <div id="dropdown-container" class="dropdown">
+            <button class="dropbtn">Sorter efter parti</button>
+            <span class="dropdown-content">
+                <li data-id="1">Enhedslisten</li>
+                <li data-id="2">Socialdemokratiet</li>
+                <li data-id="0">Se alle kandidater</li>
+            </span>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Kandidat</th>
+                <th>Parti</th>
+                <th>Id</th>
+            </tr>
+            </thead>
+            <tbody id="candidate-table-body">
+            </tbody>
+        </table>
+    </section>
+    <section id="form-container">
+        <h4>Redigere kandidatlisten</h4>
+        <p><a href="add.html">Tilføj ny kandidat</a></p>
+        <p><a href="edit.html">Rediger en kandidat</a></p>
+        <p><a href="delete.html">Slet en kandidat</a></p>
+        <p><a href="parties.html">Se partiers procentdele</a></p>
+    </section>
+</div>
+
+<script>
+
+    let allCandidates
+
+    fetch("http://localhost:8080/candidates")
+        .then(res => res.json())
+        .then(data => {
+            allCandidates = data
+            makeRows(data)})
+        .then(
+            addFilters
+    );
+
+    function makeRows(data) {
+        const candidates = data
+        const html = candidates.map(c => `
+         <tr>
+           <td>${(c.name)}</td>
+           <td>${(c.politicalParty.abbreviation)}<br>${(c.politicalParty.name)}</td>
+           <td>${(c.id)}</td>
+         </tr>
+        `).join("")
+        document.getElementById("candidate-table-body").innerHTML = html
+    }
+
+    function addFilters() {
+        const dropdown = document.querySelector(".dropdown-content")
+        dropdown.addEventListener("click", (event) => {
+            event.preventDefault()
+            const idSelected = event.target.dataset.id
+
+            if (idSelected === "0") {
+                console.log(JSON.stringify(candidates))
+                console.log("I made it here")
+                makeRows(candidates)
+            } else {
+                makeRows(candidates.filter(c => (c.id === Number(idSelected))))
+            }
+        })
+    }
+
+    // NOT HARDCODED DROPDOWN CONTENT NOT WORKING :(
+    /*
+    fetch("http://localhost:8080/parties")
+    .then(res => res.json())
+    .then(data => {
+        makeFilterBtn(data)
+    })
+
+    function makeFilterBtn(data) {
+        const parties = data
+        console.log(parties(0).name)
+        const html = parties.map(p => `
+        <li data-id="${p.id}">${p.name}</li>
+        `).join("")
+        document.querySelector(".dropdown-content").innerHTML= html
+    }
+*/
+
+</script>
+
+</body>
+</html>
