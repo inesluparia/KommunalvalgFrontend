@@ -34,8 +34,8 @@
         const html = data.map(p => `
          <tr>
            <td>${(p.abbreviation)}<br>${(p.name)}</td>
-           <td></td>
-           <td>${(p.id)}</td>
+           <td>${p.totalVotes}</td>
+           <td>% ${(p.votePercentage)}</td>
          </tr>
         `).join("")
         document.getElementById("parties-table-body").innerHTML = html

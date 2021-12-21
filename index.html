@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Candidates</title>
-    <link href="styles.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet"/>
     <script src="index.js" type="module"></script>
 
 </head>
@@ -18,15 +18,20 @@
             <span class="dropdown-content">
                 <li data-id="1">Enhedslisten</li>
                 <li data-id="2">Socialdemokratiet</li>
-                <li data-id="0">Se alle kandidater</li>
+                <li data-id="3">Det konservative Folkeparti</li>
+                <li data-id="4">Venstre</li>
+                <li data-id="5">Dansk Folkeparti</li>
+                <li data-id="6">Socialistisk Folkeparti</li>
+                <li data-id="0">Se alle</li>
             </span>
         </div>
         <table class="table">
             <thead>
             <tr>
+                <th>Id</th>
                 <th>Kandidat</th>
                 <th>Parti</th>
-                <th>Id</th>
+                <th>Stemmetal</th>
             </tr>
             </thead>
             <tbody id="candidate-table-body">
@@ -34,7 +39,7 @@
         </table>
     </section>
     <section id="form-container">
-        <h4>Redigere kandidatlisten</h4>
+        <h2>Redigere kandidatlisten</h2>
         <p><a href="add.html">Tilføj ny kandidat</a></p>
         <p><a href="edit.html">Rediger en kandidat</a></p>
         <p><a href="delete.html">Slet en kandidat</a></p>
@@ -50,18 +55,20 @@
         .then(res => res.json())
         .then(data => {
             allCandidates = data
-            makeRows(data)})
+            makeRows(data)
+        })
         .then(
             addFilters
-    );
+        );
 
     function makeRows(data) {
         const candidates = data
         const html = candidates.map(c => `
          <tr>
+           <td>${(c.id)}</td>
            <td>${(c.name)}</td>
            <td>${(c.politicalParty.abbreviation)}<br>${(c.politicalParty.name)}</td>
-           <td>${(c.id)}</td>
+           <td>${(c.votes)}</td>
          </tr>
         `).join("")
         document.getElementById("candidate-table-body").innerHTML = html
@@ -74,11 +81,12 @@
             const idSelected = event.target.dataset.id
 
             if (idSelected === "0") {
-                console.log(JSON.stringify(candidates))
+                console.log(JSON.stringify(allCandidates))
                 console.log("I made it here")
-                makeRows(candidates)
+                makeRows(allCandidates)
             } else {
-                makeRows(candidates.filter(c => (c.id === Number(idSelected))))
+                let filtered = allCandidates.filter(c => (c.politicalParty.id === Number(idSelected)))
+                makeRows(filtered)
             }
         })
     }
