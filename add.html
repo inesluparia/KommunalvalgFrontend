@@ -35,11 +35,9 @@
         const candidate = {}
         candidate.name = document.getElementById("name").value
         const letter = document.getElementById("party-letter").value
-        //ignore case?
-        //wrong input?
-        const party = parties.filter( p => p.abbreviation === letter)
-        candidate.politicalParty = party
-        //await fetchParties()
+        const party = parties.filter(p => p.abbreviation === letter)
+        //console.log(JSON.stringify(party))
+        const partyId = party[0].id
         const options = {
             method: "POST",
             headers : {
@@ -48,10 +46,12 @@
             body: JSON.stringify(candidate)
         }
 
-        fetch("http://localhost:8080/candidates",options)
-            .then(res=>res.json())
-            .then(p=> {
-                document.getElementById("status").innerText = JSON.stringify(p)
+        fetch("http://localhost:8080/candidates/" + partyId, options)
+            .then(res => {
+                if (res.ok)
+                    document.getElementById("status").innerText = "Kandidaten er blevet tilføjet."
+                else
+                    document.getElementById("status").innerText = "En fejl er sket, kandidaten var IKKE tilføjet."
             })
     }
 </script>
