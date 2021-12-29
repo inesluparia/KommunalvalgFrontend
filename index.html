@@ -25,91 +25,29 @@
                 <li data-id="0">Se alle</li>
             </span>
         </div>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Id</th>
-                <th>Kandidat</th>
-                <th>Parti</th>
-                <th>Stemmetal</th>
-            </tr>
-            </thead>
-            <tbody id="candidate-table-body">
-            </tbody>
-        </table>
+<!--        <div style="height:500px;overflow:hidden; overflow-y:scroll;">-->
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Kandidat</th>
+                    <th>Parti</th>
+                    <th>Stemmetal</th>
+                </tr>
+                </thead>
+                <tbody id="candidate-table-body">
+                </tbody>
+            </table>
+<!--        </div>-->
     </section>
     <section id="form-container">
         <h2>Redigere kandidatlisten</h2>
-        <p><a href="add.html">Tilføj ny kandidat</a></p>
-        <p><a href="edit.html">Rediger en kandidat</a></p>
-        <p><a href="delete.html">Slet en kandidat</a></p>
-        <p><a href="parties.html">Se partiers procentdele</a></p>
+        <p><a href="pages/add/add.html">Tilføj ny kandidat</a></p>
+        <p><a href="pages/edit/edit.html">Rediger en kandidat</a></p>
+        <p><a href="pages/delete/delete.html">Slet en kandidat</a></p>
+        <p><a href="pages/parties/parties.html">Se partiers procentdele</a></p>
     </section>
 </div>
-
-<script>
-
-    let allCandidates
-
-    fetch("http://localhost:8080/candidates")
-        .then(res => res.json())
-        .then(data => {
-            allCandidates = data
-            makeRows(data)
-        })
-        .then(
-            addFilters
-        );
-
-    function makeRows(data) {
-        const candidates = data
-        const html = candidates.map(c => `
-         <tr>
-           <td>${(c.id)}</td>
-           <td>${(c.name)}</td>
-           <td>${(c.politicalParty.abbreviation)}<br>${(c.politicalParty.name)}</td>
-           <td>${(c.votes)}</td>
-         </tr>
-        `).join("")
-        document.getElementById("candidate-table-body").innerHTML = html
-    }
-
-    function addFilters() {
-        const dropdown = document.querySelector(".dropdown-content")
-        dropdown.addEventListener("click", (event) => {
-            event.preventDefault()
-            const idSelected = event.target.dataset.id
-
-            if (idSelected === "0") {
-                console.log(JSON.stringify(allCandidates))
-                console.log("I made it here")
-                makeRows(allCandidates)
-            } else {
-                let filtered = allCandidates.filter(c => (c.politicalParty.id === Number(idSelected)))
-                makeRows(filtered)
-            }
-        })
-    }
-
-    // NOT HARDCODED DROPDOWN CONTENT NOT WORKING :(
-    /*
-    fetch("http://localhost:8080/parties")
-    .then(res => res.json())
-    .then(data => {
-        makeFilterBtn(data)
-    })
-
-    function makeFilterBtn(data) {
-        const parties = data
-        console.log(parties(0).name)
-        const html = parties.map(p => `
-        <li data-id="${p.id}">${p.name}</li>
-        `).join("")
-        document.querySelector(".dropdown-content").innerHTML= html
-    }
-*/
-
-</script>
 
 </body>
 </html>

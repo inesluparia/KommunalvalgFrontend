@@ -3,34 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Tilføj kandidat</title>
-    <link href="styles.css" rel="stylesheet" />
+    <link href="../../styles.css" rel="stylesheet"/>
 </head>
 <body>
 <h1>Tilføj kandidat</h1>
 <form>
     <label>Kandidat</label>
-    <div><input id="name" placeholder="Navn" /></div>
-    <br />
+    <div><input id="name" placeholder="Navn"/></div>
+    <br/>
     <label>Parti</label>
     <div><input id="party-letter" placeholder="Parti Bogstav"></div>
-    <button  id="save-btn">Opret kandidat</button>
+    <button id="save-btn">Opret kandidat</button>
 </form>
 <p id="status"></p>
-<p><a href="index.html">Tilbage</a></p>
+<p><a href="../../index.html">Tilbage</a></p>
 
 <script>
 
     let parties
     fetchParties()
+
     function fetchParties() {
         fetch("http://localhost:8080/parties")
             .then(res => res.json())
             .then(data => {
                 parties = data
-                });
+            });
     }
 
-    document.getElementById("save-btn").onclick = async (evt)=>{
+    document.getElementById("save-btn").onclick = async (evt) => {
         evt.preventDefault()
         const candidate = {}
         candidate.name = document.getElementById("name").value
@@ -40,8 +41,8 @@
         const partyId = party[0].id
         const options = {
             method: "POST",
-            headers : {
-                'Content-Type' : 'application/json'
+            headers: {
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(candidate)
         }
@@ -54,4 +55,5 @@
                     document.getElementById("status").innerText = "En fejl er sket, kandidaten var IKKE tilføjet."
             })
     }
+
 </script>
